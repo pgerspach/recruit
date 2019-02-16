@@ -1,20 +1,44 @@
-<br>
-<br>
-<br>
-<br>
+<header class = "header">
+    <h1>
+        College Football Wins and Recruiting Rank by Year!
+    </h1>
+</header>
 
-<div id="tester" style="width:600px;height:250px;"></div>
+<select class="dropDown">
+    {{#each teamsArray}}
+    <option value="{{team}}">{{team}}</option>
+    {{/each}}
+</select>
+<div class = "plot">
+<div id="tester" style="width:800px;height:300px;"></div>
+
+</div>
+
 <script>
-    $.post("./recruit", {},data => {
+    $(".dropDown").on("change", (event) => {
+        console.log(event.target);
+        $.post("/recruit/team", { team: event.target.value }, data => {
+            data[0].name = 'Wins';
+            data[0].type = 'scatter';
+            data[1].name = 'Recruiting Rank';
+            data[1].yaxis = 'y2';
+            data[1].type = 'scatter';
+            console.log(data);
 
-        TESTER = document.getElementById("tester");
-        Plotly.plot(
-            TESTER,
-            data,
-            {
-                margin: { t: 0 }
-            }
-        );
-        console.log(data);
-    });
+            TESTER = document.getElementById("tester");
+
+            Plotly.newPlot(
+                TESTER,
+                data,
+                {
+                    title: "Recruiting Rank and wins per year",
+                    margin: { t: 0 },
+                    yaxis2: {
+                        overlaying: 'y',
+                        side: 'right'
+                    }
+                }
+            );
+        });
+    })
 </script>
